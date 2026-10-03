@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap" rel="stylesheet">
+<script src="data.js"></script>
+<style>html,body{margin:0;height:100%;background:#f5f3ec;overflow:hidden}*{box-sizing:border-box}a{color:oklch(0.42 0.08 150)}a:hover{color:oklch(0.32 0.08 150)}button{font:inherit}</style>
+</helmet>
+<div style="position:fixed; inset:0; font-family:'Instrument Sans',system-ui,sans-serif; color:oklch(0.25 0.02 150); background:oklch(0.965 0.008 90);">
+
+  <div ref="{{ vpRef }}" onPointerDown="{{ onDown }}" onPointerMove="{{ onMove }}" onPointerUp="{{ onUp }}" onPointerLeave="{{ onUp }}" style="position:absolute; inset:0; overflow:hidden; cursor:{{ cursor }}; touch-action:none; background-image:radial-gradient(oklch(0.25 0.02 150 / 0.13) 1px, transparent 1.2px); background-size:{{ gridSize }}; background-position:{{ gridPos }};">
+    <div style="position:absolute; left:0; top:0; transform-origin:0 0; transform:{{ transform }};">
+      <div style="position:absolute; left:0; top:{{ headY }}px; display:flex; font-size:11px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:oklch(0.5 0.02 150);">
+        <div style="position:absolute; left:0; width:240px;">Obszar życia</div>
+        <div style="position:absolute; left:300px; width:280px;">Postawa · metoda</div>
+        <div style="position:absolute; left:640px; width:340px;">Drogowskaz</div>
+        <div style="position:absolute; left:1140px; width:280px;">Książka</div>
+      </div>
+      <svg width="1500" height="{{ svgH }}" style="position:absolute; left:0; top:{{ svgTop }}px; overflow:visible; pointer-events:none;">
+        <g transform="{{ svgShift }}">
+          <sc-for list="{{ treeEdges }}" as="e" hint-placeholder-count="0">
+            <path d="{{ e.d }}" fill="none" stroke="oklch(0.42 0.08 150)" stroke-width="1.4" stroke-opacity="{{ e.op }}"></path>
+          </sc-for>
+          <sc-for list="{{ bookEdges }}" as="e" hint-placeholder-count="0">
+            <path d="{{ e.d }}" fill="none" stroke="oklch(0.66 0.14 60)" stroke-width="{{ e.w }}" stroke-opacity="{{ e.op }}"></path>
+          </sc-for>
+        </g>
+      </svg>
+
+      <sc-for list="{{ obszarNodes }}" as="n" hint-placeholder-count="10">
+        <div data-node="1" onClick="{{ n.onClick }}" style="position:absolute; left:0; top:{{ n.top }}px; width:240px; height:64px; padding:10px 34px 10px 14px; display:flex; flex-direction:column; justify-content:center; gap:3px; background:oklch(0.40 0.08 150); color:oklch(0.98 0.01 150); border-radius:4px; cursor:pointer; opacity:{{ n.op }}; outline:{{ n.outline }}; outline-offset:3px; transition:opacity 180ms;">
+          <div style="font-family:'Source Serif 4',serif; font-size:16px; font-weight:600; line-height:1.15;">{{ n.name }}</div>
+          <div style="font-size:11px; font-weight:500; color:oklch(0.88 0.04 150);">{{ n.meta }}</div>
+          <sc-if value="{{ n.hasKids }}" hint-placeholder-val="{{ true }}">
+            <button data-node="1" onClick="{{ n.onToggle }}" style="position:absolute; right:-11px; top:21px; width:22px; height:22px; border-radius:11px; border:1.5px solid oklch(0.40 0.08 150); background:oklch(0.98 0.005 90); color:oklch(0.40 0.08 150); font-size:14px; font-weight:700; line-height:1; padding:0; cursor:pointer;">{{ n.toggleLabel }}</button>
+          </sc-if>
+        </div>
+      </sc-for>
+
+      <sc-for list="{{ postawaNodes }}" as="n" hint-placeholder-count="0">
+        <div data-node="1" onClick="{{ n.onClick }}" style="position:absolute; left:300px; top:{{ n.top }}px; width:280px; height:70px; padding:8px 30px 8px 12px; display:flex; flex-direction:column; justify-content:center; gap:2px; background:oklch(0.99 0.004 90); border:1px solid oklch(0.42 0.08 150 / 0.45); border-radius:4px; cursor:pointer; opacity:{{ n.op }}; outline:{{ n.outline }}; outline-offset:3px; transition:opacity 180ms;">
+          <div style="font-size:13px; font-weight:600; line-height:1.25; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">{{ n.name }}</div>
+          <div style="font-size:10.5px; color:oklch(0.5 0.02 150);">{{ n.meta }}</div>
+          <sc-if value="{{ n.hasKids }}" hint-placeholder-val="{{ true }}">
+            <button data-node="1" onClick="{{ n.onToggle }}" style="position:absolute; right:-11px; top:23px; width:22px; height:22px; border-radius:11px; border:1.5px solid oklch(0.42 0.08 150); background:oklch(0.98 0.005 90); color:oklch(0.42 0.08 150); font-size:14px; font-weight:700; line-height:1; padding:0; cursor:pointer;">{{ n.toggleLabel }}</button>
+          </sc-if>
+        </div>
+      </sc-for>
+
+      <sc-for list="{{ drogNodes }}" as="n" hint-placeholder-count="0">
+        <div data-node="1" onClick="{{ n.onClick }}" style="position:absolute; left:640px; top:{{ n.top }}px; width:340px; height:52px; padding:6px 10px; display:flex; align-items:center; gap:9px; background:oklch(0.95 0.02 150 / 0.75); border-radius:3px; cursor:pointer; opacity:{{ n.op }}; outline:{{ n.outline }}; outline-offset:2px; transition:opacity 180ms;">
+          <div style="flex:none; width:7px; height:7px; background:oklch(0.42 0.08 150); transform:rotate(45deg);"></div>
+          <div style="flex:1; min-width:0; font-size:12px; line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">{{ n.name }}</div>
+          <sc-if value="{{ n.hr }}" hint-placeholder-val="{{ false }}">
+            <div style="flex:none; font-size:9.5px; font-weight:700; letter-spacing:0.06em; padding:2px 5px; border-radius:2px; background:oklch(0.25 0.02 150); color:oklch(0.98 0.005 90);">HR</div>
+          </sc-if>
+          <sc-if value="{{ n.hasBooks }}" hint-placeholder-val="{{ false }}">
+            <div style="flex:none; font-size:10.5px; font-weight:700; color:oklch(0.55 0.13 60);">{{ n.bookCount }}</div>
+          </sc-if>
+        </div>
+      </sc-for>
+
+      <sc-for list="{{ bookNodes }}" as="n" hint-placeholder-count="0">
+        <div data-node="1" onClick="{{ n.onClick }}" style="position:absolute; left:1140px; top:{{ n.top }}px; width:280px; height:44px; padding:5px 10px; display:flex; align-items:center; gap:9px; background:oklch(0.995 0.003 90); border:1px solid oklch(0.66 0.14 60 / 0.45); border-radius:3px; cursor:pointer; opacity:{{ n.op }}; outline:{{ n.outline }}; outline-offset:2px; transition:opacity 180ms;">
+          <div style="flex:none; width:8px; height:8px; border-radius:1px; background:oklch(0.66 0.14 60);"></div>
+          <div style="flex:1; min-width:0; display:flex; flex-direction:column; gap:1px;">
+            <div style="font-size:12.5px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ n.name }}</div>
+            <div style="font-size:10.5px; color:oklch(0.5 0.02 150); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ n.author }}</div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div data-ui="1" style="position:absolute; left:16px; top:16px; display:flex; flex-wrap:wrap; align-items:center; gap:8px; max-width:calc(100% - 32px);">
+    <div style="display:flex; flex-direction:column; gap:1px; padding:6px 14px; background:oklch(0.25 0.02 150); color:oklch(0.97 0.006 90); border-radius:4px; white-space:nowrap;">
+      <div style="font-family:'Source Serif 4',serif; font-size:16px; font-weight:600;">Drogowskazy HO · HR i lektury</div>
+      <div style="font-size:11px; color:oklch(0.82 0.02 150);">Vademecum ZHR · harcerskielektury.pl</div>
+    </div>
+    <div style="display:flex; gap:4px; padding:4px; background:oklch(0.99 0.004 90); border:1px solid oklch(0.25 0.02 150 / 0.12); border-radius:4px;">
+      <button onClick="{{ toggleLib }}" style="height:32px; padding:0 10px; border:0; border-radius:3px; background:{{ libBtnBg }}; font-size:12px; font-weight:600; color:{{ libBtnFg }}; cursor:pointer; white-space:nowrap;">Biblioteczka</button>
+      <div style="width:1px; background:oklch(0.25 0.02 150 / 0.12);"></div>
+      <button onClick="{{ expandAll }}" style="height:32px; padding:0 10px; border:0; border-radius:3px; background:transparent; font-size:12px; font-weight:600; color:oklch(0.25 0.02 150); cursor:pointer; white-space:nowrap;" style-hover="background:oklch(0.93 0.03 150)">Rozwiń wszystko</button>
+      <button onClick="{{ collapseAll }}" style="height:32px; padding:0 10px; border:0; border-radius:3px; background:transparent; font-size:12px; font-weight:600; color:oklch(0.25 0.02 150); cursor:pointer; white-space:nowrap;" style-hover="background:oklch(0.93 0.03 150)">Zwiń</button>
+      <div style="width:1px; background:oklch(0.25 0.02 150 / 0.12);"></div>
+      <button onClick="{{ zoomOut }}" style="width:32px; height:32px; border:0; border-radius:3px; background:transparent; font-size:16px; font-weight:600; color:oklch(0.25 0.02 150); cursor:pointer;" style-hover="background:oklch(0.93 0.03 150)">−</button>
+      <div style="min-width:44px; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:600; color:oklch(0.5 0.02 150);">{{ zoomLabel }}</div>
+      <button onClick="{{ zoomIn }}" style="width:32px; height:32px; border:0; border-radius:3px; background:transparent; font-size:16px; font-weight:600; color:oklch(0.25 0.02 150); cursor:pointer;" style-hover="background:oklch(0.93 0.03 150)">+</button>
+      <button onClick="{{ fit }}" style="height:32px; padding:0 10px; border:0; border-radius:3px; background:transparent; font-size:12px; font-weight:600; color:oklch(0.25 0.02 150); cursor:pointer; white-space:nowrap;" style-hover="background:oklch(0.93 0.03 150)">Dopasuj</button>
+    </div>
+    <input data-ui="1" value="{{ query }}" onChange="{{ onQuery }}" placeholder="Szukaj książki lub drogowskazu…" style="height:42px; width:220px; flex:1 1 160px; max-width:260px; padding:0 12px; border:1px solid oklch(0.25 0.02 150 / 0.12); border-radius:4px; background:oklch(0.99 0.004 90); font:inherit; font-size:13px; color:oklch(0.25 0.02 150); outline:none;">
+    <sc-if value="{{ focusMode }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex; align-items:center; gap:10px; height:42px; padding:0 6px 0 12px; background:oklch(0.95 0.05 70); border:1px solid oklch(0.66 0.14 60 / 0.5); border-radius:4px; font-size:12px; white-space:nowrap;">
+        <span style="font-weight:600; color:oklch(0.4 0.1 60);">Widok ścieżki</span>
+        <button onClick="{{ exitFocus }}" style="height:30px; padding:0 10px; border:0; border-radius:3px; background:oklch(0.25 0.02 150); color:oklch(0.98 0.005 90); font-size:12px; font-weight:600; cursor:pointer; white-space:nowrap;">Pokaż całą mapę</button>
+      </div>
+    </sc-if>
+  </div>
+
+  <sc-if value="{{ hasResults }}" hint-placeholder-val="{{ false }}">
+    <div data-ui="1" style="position:absolute; left:16px; top:76px; width:min(420px, calc(100% - 32px)); max-height:50vh; overflow:auto; background:oklch(0.99 0.004 90); border:1px solid oklch(0.25 0.02 150 / 0.12); border-radius:4px; box-shadow:0 8px 24px oklch(0.25 0.02 150 / 0.12); padding:4px;">
+      <sc-for list="{{ results }}" as="r" hint-placeholder-count="0">
+        <div onClick="{{ r.onClick }}" style="display:flex; flex-direction:column; gap:1px; padding:8px 10px; border-radius:3px; cursor:pointer;" style-hover="background:oklch(0.95 0.02 150)">
+          <div style="font-size:12.5px; font-weight:600;">{{ r.label }}</div>
+          <div style="font-size:10.5px; color:oklch(0.5 0.02 150);">{{ r.sub }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ lib }}" hint-placeholder-val="{{ false }}">
+    <div data-ui="1" style="position:absolute; left:16px; top:76px; bottom:64px; width:min(400px, calc(100% - 32px)); display:flex; flex-direction:column; background:oklch(0.99 0.004 90); border:1px solid oklch(0.25 0.02 150 / 0.12); border-radius:4px; box-shadow:0 8px 24px oklch(0.25 0.02 150 / 0.12); z-index:2;">
+      <div style="display:flex; flex-direction:column; gap:12px; padding:16px 16px 12px; border-bottom:1px solid oklch(0.25 0.02 150 / 0.08);">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
+          <div style="font-family:'Source Serif 4',serif; font-size:18px; font-weight:600;">Biblioteczka</div>
+          <button onClick="{{ toggleLib }}" style="width:30px; height:30px; border:0; border-radius:3px; background:transparent; font-size:18px; color:oklch(0.25 0.02 150); cursor:pointer;" style-hover="background:oklch(0.93 0.03 150)">×</button>
+        </div>
+        <input value="{{ libQ }}" onChange="{{ onLibQ }}" placeholder="Tytuł, autor lub tag…" style="height:38px; width:100%; padding:0 12px; border:1px solid oklch(0.25 0.02 150 / 0.15); border-radius:4px; background:#fff; font:inherit; font-size:13px; color:oklch(0.25 0.02 150); outline:none;">
+        <div style="display:flex; flex-direction:column; gap:6px;">
+          <div style="font-size:10.5px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:oklch(0.5 0.02 150);">Połączenia na mapie</div>
+          <div style="display:flex; gap:4px; padding:3px; background:oklch(0.95 0.01 150); border-radius:4px;">
+            <sc-for list="{{ linkOpts }}" as="o" hint-placeholder-count="4">
+              <button onClick="{{ o.onClick }}" style="flex:1; height:30px; border:0; border-radius:3px; background:{{ o.bg }}; color:{{ o.fg }}; font-size:12px; font-weight:600; cursor:pointer; white-space:nowrap;">{{ o.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:6px;">
+          <div style="display:flex; justify-content:space-between; align-items:baseline;">
+            <div style="font-size:10.5px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:oklch(0.5 0.02 150);">Tagi</div>
+            <sc-if value="{{ hasLibTags }}" hint-placeholder-val="{{ false }}">
+              <span onClick="{{ clearTags }}" style="font-size:11px; color:oklch(0.42 0.08 150); cursor:pointer; text-decoration:underline;">wyczyść</span>
+            </sc-if>
+          </div>
+          <div style="display:flex; flex-wrap:wrap; gap:5px; max-height:116px; overflow:auto;">
+            <sc-for list="{{ tagChips }}" as="t" hint-placeholder-count="12">
+              <button onClick="{{ t.onClick }}" style="height:26px; padding:0 9px; border:1px solid {{ t.bd }}; border-radius:13px; background:{{ t.bg }}; color:{{ t.fg }}; font-size:11.5px; font-weight:500; cursor:pointer; white-space:nowrap;">{{ t.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+      <div style="padding:10px 16px 4px; font-size:11.5px; color:oklch(0.5 0.02 150);">{{ libCount }}</div>
+      <div style="flex:1; overflow:auto; padding:4px 10px 12px; display:flex; flex-direction:column; gap:4px;">
+        <sc-for list="{{ libBooks }}" as="b" hint-placeholder-count="6">
+          <div onClick="{{ b.onClick }}" style="display:flex; align-items:flex-start; gap:10px; padding:9px 8px; border-radius:3px; cursor:pointer; outline:{{ b.outline }};" style-hover="background:oklch(0.95 0.02 150)">
+            <div style="flex:1; min-width:0; display:flex; flex-direction:column; gap:3px;">
+              <div style="font-size:13px; font-weight:600; line-height:1.3;">{{ b.name }}</div>
+              <div style="font-size:11px; color:oklch(0.5 0.02 150);">{{ b.author }}</div>
+              <div style="display:flex; flex-wrap:wrap; gap:4px; margin-top:2px;">
+                <sc-for list="{{ b.tags }}" as="tg" hint-placeholder-count="0">
+                  <span style="font-size:10px; padding:1px 6px; border-radius:9px; background:oklch(0.95 0.02 150); color:oklch(0.38 0.05 150); white-space:nowrap;">{{ tg.label }}</span>
+                </sc-for>
+              </div>
+            </div>
+            <div style="flex:none; display:flex; flex-direction:column; align-items:center; min-width:36px; padding:4px 6px; border-radius:3px; background:oklch(0.95 0.04 70);">
+              <div style="font-size:15px; font-weight:700; color:oklch(0.5 0.13 60); line-height:1;">{{ b.links }}</div>
+              <div style="font-size:9px; color:oklch(0.5 0.08 60);">połącz.</div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <div data-ui="1" style="position:absolute; left:16px; bottom:16px; display:flex; flex-wrap:wrap; gap:14px; align-items:center; padding:8px 12px; background:oklch(0.99 0.004 90 / 0.92); border:1px solid oklch(0.25 0.02 150 / 0.1); border-radius:4px; font-size:11px; color:oklch(0.4 0.02 150);">
+    <div style="display:flex; align-items:center; gap:6px; white-space:nowrap;"><div style="width:12px; height:12px; border-radius:2px; background:oklch(0.40 0.08 150);"></div>Obszar</div>
+    <div style="display:flex; align-items:center; gap:6px; white-space:nowrap;"><div style="width:12px; height:12px; border-radius:2px; border:1px solid oklch(0.42 0.08 150); background:#fff;"></div>Postawa / metoda</div>
+    <div style="display:flex; align-items:center; gap:6px; white-space:nowrap;"><div style="width:7px; height:7px; background:oklch(0.42 0.08 150); transform:rotate(45deg);"></div>Drogowskaz</div>
+    <div style="display:flex; align-items:center; gap:6px; white-space:nowrap;"><div style="width:9px; height:9px; border-radius:1px; background:oklch(0.66 0.14 60);"></div>Książka</div>
+    <div style="display:flex; align-items:center; gap:6px; white-space:nowrap;"><div style="font-size:9px; font-weight:700; padding:1px 4px; border-radius:2px; background:oklch(0.25 0.02 150); color:#fff;">HR</div>głównie dla HR</div>
+    <div style="color:oklch(0.55 0.02 150); white-space:nowrap;">Kółko myszy: zoom · przeciągnij: przesuń</div>
+  </div>
+
+  <sc-if value="{{ hasSel }}" hint-placeholder-val="{{ false }}">
+    <aside data-ui="1" style="position:absolute; top:0; right:0; bottom:0; width:min(420px, 100%); background:oklch(0.99 0.004 90); border-left:1px solid oklch(0.25 0.02 150 / 0.12); box-shadow:-8px 0 24px oklch(0.25 0.02 150 / 0.06); display:flex; flex-direction:column;">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 18px; border-bottom:1px solid oklch(0.25 0.02 150 / 0.08);">
+        <div style="font-family:ui-monospace,Menlo,monospace; font-size:11px; color:oklch(0.5 0.02 150); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ sel.url }}</div>
+        <button onClick="{{ closeSel }}" style="flex:none; width:32px; height:32px; border:0; border-radius:3px; background:transparent; font-size:18px; color:oklch(0.25 0.02 150); cursor:pointer;" style-hover="background:oklch(0.93 0.03 150)">×</button>
+      </div>
+      <div style="flex:1; overflow:auto; padding:22px 22px 40px; display:flex; flex-direction:column; gap:18px;">
+        <div style="display:flex; flex-wrap:wrap; align-items:center; gap:4px 6px; font-size:11.5px; color:oklch(0.5 0.02 150);">
+          <sc-for list="{{ sel.path }}" as="p" hint-placeholder-count="0">
+            <div style="display:flex; align-items:center; gap:6px; white-space:nowrap;">
+              <span onClick="{{ p.onClick }}" style="cursor:pointer; text-decoration:underline; text-decoration-color:oklch(0.5 0.02 150 / 0.4); text-underline-offset:2px;">{{ p.label }}</span>
+              <span>›</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div style="font-size:11px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:{{ sel.typeColor }};">{{ sel.typeLabel }}</div>
+            <sc-if value="{{ sel.hr }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:9.5px; font-weight:700; padding:2px 5px; border-radius:2px; background:oklch(0.25 0.02 150); color:#fff;">HR</div>
+            </sc-if>
+          </div>
+          <h1 style="margin:0; font-family:'Source Serif 4',serif; font-size:24px; font-weight:600; line-height:1.2; text-wrap:pretty;">{{ sel.name }}</h1>
+          <sc-if value="{{ sel.meta }}" hint-placeholder-val="{{ false }}">
+            <div style="font-size:13px; color:oklch(0.45 0.02 150);">{{ sel.meta }}</div>
+          </sc-if>
+        </div>
+        <sc-if value="{{ sel.hasTags }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex; flex-wrap:wrap; gap:5px;">
+            <sc-for list="{{ sel.tags }}" as="tg" hint-placeholder-count="0">
+              <button onClick="{{ tg.onClick }}" style="height:26px; padding:0 10px; border:1px solid oklch(0.42 0.08 150 / 0.3); border-radius:13px; background:oklch(0.96 0.02 150); color:oklch(0.35 0.06 150); font-size:11.5px; font-weight:500; cursor:pointer; white-space:nowrap;" style-hover="background:oklch(0.92 0.04 150)">{{ tg.label }}</button>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{ sel.desc }}" hint-placeholder-val="{{ false }}">
+          <p style="margin:0; font-size:14px; line-height:1.55; text-wrap:pretty;">{{ sel.desc }}</p>
+        </sc-if>
+        <sc-if value="{{ sel.note }}" hint-placeholder-val="{{ false }}">
+          <p style="margin:0; padding:10px 12px; font-size:12.5px; line-height:1.5; background:oklch(0.95 0.03 80); border-radius:3px;">{{ sel.note }}</p>
+        </sc-if>
+        <div style="display:flex; align-items:center; justify-content:center; min-height:120px; padding:16px; border:1px dashed oklch(0.25 0.02 150 / 0.25); border-radius:4px; background:repeating-linear-gradient(135deg, oklch(0.25 0.02 150 / 0.035) 0 8px, transparent 8px 16px); font-family:ui-monospace,Menlo,monospace; font-size:11px; color:oklch(0.5 0.02 150); text-align:center;">miejsce na pełny opis elementu</div>
+        <sc-for list="{{ sel.sections }}" as="s" hint-placeholder-count="0">
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            <div style="font-size:11px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:oklch(0.5 0.02 150);">{{ s.title }}</div>
+            <sc-for list="{{ s.items }}" as="it" hint-placeholder-count="0">
+              <div onClick="{{ it.onClick }}" style="display:flex; align-items:flex-start; gap:10px; padding:9px 10px; border:1px solid oklch(0.25 0.02 150 / 0.09); border-radius:3px; cursor:pointer;" style-hover="background:oklch(0.95 0.02 150); border-color:oklch(0.42 0.08 150 / 0.4)">
+                <div style="flex:none; margin-top:4px; width:8px; height:8px; border-radius:1px; background:{{ it.color }};"></div>
+                <div style="flex:1; min-width:0; display:flex; flex-direction:column; gap:2px;">
+                  <div style="font-size:13px; font-weight:500; line-height:1.35;">{{ it.label }}</div>
+                  <sc-if value="{{ it.sub }}" hint-placeholder-val="{{ false }}">
+                    <div style="font-size:11px; color:oklch(0.5 0.02 150);">{{ it.sub }}</div>
+                  </sc-if>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-for>
+      </div>
+    </aside>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;startExpanded&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Mapa&quot;},&quot;edgeStyle&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;krzywe&quot;,&quot;kątowe&quot;],&quot;default&quot;:&quot;krzywe&quot;,&quot;tsType&quot;:&quot;'krzywe' | 'kątowe'&quot;,&quot;section&quot;:&quot;Mapa&quot;}}">
+class Component extends DCLogic {
+  state = { ready: false, expanded: new Set(), sel: null, k: 0.6, tx: 40, ty: 90, drag: null, query: '', lib: false, libQ: '', libTags: [], minLinks: 1, focusMode: false };
+  vpRef = React.createRef();
+  X = { obszar: 0, postawa: 300, drogowskaz: 640, ksiazka: 1140 };
+  W = { obszar: 240, postawa: 280, drogowskaz: 340, ksiazka: 280 };
+  H = { obszar: 64, postawa: 70, drogowskaz: 52, ksiazka: 44 };
+  G = { obszar: 22, postawa: 10, drogowskaz: 6 };
+  SLUG = { obszar: 'obszar', postawa: 'postawa', drogowskaz: 'drogowskaz', ksiazka: 'ksiazka' };
+
+  componentDidMount() {
+    const wait = () => window.ZHR_DATA ? this.build(window.ZHR_DATA) : setTimeout(wait, 50);
+    wait();
+    this._hash = () => this.fromHash();
+    window.addEventListener('hashchange', this._hash);
+    this._wheel = (e) => this.onWheel(e);
+    const attach = () => this.vpRef.current ? this.vpRef.current.addEventListener('wheel', this._wheel, { passive: false }) : setTimeout(attach, 50);
+    attach();
+  }
+  componentWillUnmount() {
+    window.removeEventListener('hashchange', this._hash);
+    if (this.vpRef.current) this.vpRef.current.removeEventListener('wheel', this._wheel);
+  }
+
+  build(D) {
+    const N = {};
+    D.obszary.forEach(o => {
+      N[o.id] = { id: o.id, type: 'obszar', name: o.name, desc: o.intro, missing: o.missing, parent: null, children: [], books: [] };
+      o.postawy.forEach(p => {
+        N[o.id].children.push(p.id);
+        N[p.id] = { id: p.id, type: 'postawa', name: p.name, desc: p.desc, method: p.method, parent: o.id, children: [], books: [] };
+        p.d.forEach((d, i) => {
+          const id = p.id + '-' + (i + 1);
+          N[p.id].children.push(id);
+          N[id] = { id, type: 'drogowskaz', name: typeof d === 'string' ? d : d.t, hr: !!d.hr, parent: p.id, children: [], books: [] };
+        });
+      });
+    });
+    this.roots = D.obszary.map(o => o.id);
+    const B = {};
+    D.ksiazki.forEach(b => {
+      B[b.id] = { id: b.id, type: 'ksiazka', name: b.t, author: b.a, cat: b.c, src: b.src, desc: b.topic, tags: b.tags || [], links: b.l.filter(l => N[l] || console.warn('Brak węzła', l, b.id)) };
+      B[b.id].links.forEach(l => N[l].books.push(b.id));
+    });
+    this.N = N; this.B = B;
+    this.subBooks = {};
+    const sb = (id) => { const s = new Set(N[id].books); N[id].children.forEach(c => sb(c).forEach(x => s.add(x))); this.subBooks[id] = s; return s; };
+    this.roots.forEach(sb);
+    const exp = new Set(this.props.startExpanded ? Object.keys(N).filter(id => N[id].children.length || N[id].books.length) : []);
+    this.setState({ ready: true, expanded: exp }, () => { this.fromHash(); if (!this.state.sel) this.fit(); });
+  }
+
+  get(id) { return this.N[id] || this.B[id]; }
+  ancestors(id) { const a = []; let p = this.N[id] && this.N[id].parent; while (p) { a.unshift(p); p = this.N[p].parent; } return a; }
+  descendants(id, out = new Set()) { out.add(id); this.N[id].children.forEach(c => this.descendants(c, out)); return out; }
+
+  fromHash() {
+    if (!this.state.ready) return;
+    const m = (location.hash || '').match(/^#\/(\w+)\/(.+)$/);
+    const id = m && decodeURIComponent(m[2]);
+    if (!id || !this.get(id)) { if (this.state.sel) this.setState({ sel: null, focusMode: false }); return; }
+    let focusMode = this.state.focusMode;
+    if (this._focusNext) { focusMode = true; this._focusNext = false; }
+    const exp = new Set(this.state.expanded);
+    if (this.B[id]) this.B[id].links.forEach(l => { this.ancestors(l).forEach(a => exp.add(a)); if (!this.N[l].children.length) exp.add(l); });
+    else { this.ancestors(id).forEach(a => exp.add(a)); if (this.N[id].children.length || this.N[id].books.length) exp.add(id); }
+    this.setState({ sel: id, expanded: exp, query: '', focusMode }, () => focusMode ? this.fit() : this.ensureVisible(id));
+  }
+  select(id) {
+    const h = '#/' + this.SLUG[this.get(id).type] + '/' + encodeURIComponent(id);
+    if (location.hash === h) this.fromHash(); else location.hash = h;
+  }
+  toggle(id) {
+    const exp = new Set(this.state.expanded);
+    if (exp.has(id)) this.descendants(id).forEach(d => exp.delete(d)); else exp.add(id);
+    this.setState({ expanded: exp, focusMode: false });
+  }
+
+  focusSet() {
+    const { focusMode, sel } = this.state;
+    if (!focusMode || !sel || !this.get(sel)) return null;
+    if (this._fk === sel) return this._fs;
+    const F = new Set();
+    let books;
+    if (this.B[sel]) { this.B[sel].links.forEach(l => { F.add(l); this.ancestors(l).forEach(a => F.add(a)); }); books = new Set([sel]); }
+    else { this.descendants(sel).forEach(d => F.add(d)); this.ancestors(sel).forEach(a => F.add(a)); books = this.subBooks[sel]; }
+    this._fk = sel; this._fs = { F, books };
+    return this._fs;
+  }
+  layout() {
+    const FS = this.focusSet(), F = FS && FS.F;
+    const key = [...this.state.expanded].sort().join('|') + (FS ? '#f:' + this.state.sel : '');
+    if (this._lk === key) return this._lay;
+    const N = this.N, pos = {}, exp = this.state.expanded;
+    let y = 0;
+    const place = (id) => {
+      const n = N[id], h = this.H[n.type];
+      const c = F ? n.children.filter(x => F.has(x)) : n.children;
+      if ((F || exp.has(id)) && c.length) {
+        c.forEach(place);
+        pos[id] = { y: (pos[c[0]].y + pos[c[c.length - 1]].y) / 2, h };
+        y += this.G[n.type];
+      } else { pos[id] = { y: y + h / 2, h }; y += h + this.G[n.type]; }
+    };
+    (F ? this.roots.filter(r => F.has(r)) : this.roots).forEach(place);
+    const treeBottom = y;
+    const open = (l) => F ? F.has(l) && !!pos[l] : pos[l] && (N[l].type === 'drogowskaz' || exp.has(l));
+    const books = Object.values(this.B).map(b => {
+      const reps = b.links.filter(open);
+      const d = reps.length ? reps.reduce((s, r) => s + pos[r].y, 0) / reps.length : treeBottom;
+      return { id: b.id, reps, d };
+    }).filter(b => b.reps.length && (!FS || FS.books.has(b.id))).sort((a, b) => a.d - b.d);
+    const step = this.H.ksiazka + 8;
+    let prev = -Infinity;
+    books.forEach(b => { b.y = Math.max(b.d, prev + step); prev = b.y; });
+    const off = books.reduce((s, b) => s + (b.y - b.d), 0) / Math.max(1, books.length);
+    const minFirst = (books[0] ? books[0].d : 0) - 200;
+    const shift = Math.min(off * 0.6, Math.max(0, (books[0] ? books[0].y : 0) - minFirst));
+    books.forEach(b => { b.y -= shift; pos[b.id] = { y: b.y, h: this.H.ksiazka }; });
+    let minY = Infinity, maxY = -Infinity;
+    Object.values(pos).forEach(p => { minY = Math.min(minY, p.y - p.h / 2); maxY = Math.max(maxY, p.y + p.h / 2); });
+    this._lk = key; this._lay = { pos, books, minY, maxY };
+    return this._lay;
+  }
+
+  vpSize() { const el = this.vpRef.current; const r = el ? el.getBoundingClientRect() : { width: 1200, height: 800 }; return { w: r.width, h: r.height }; }
+  fit() {
+    if (!this.state.ready) return;
+    const L = this.layout(), { w, h } = this.vpSize();
+    const panel = this.state.sel ? Math.min(420, w) : 0;
+    const cw = 1420;
+    let tMin = Infinity, tMax = -Infinity;
+    Object.keys(L.pos).forEach(id => { if (this.N[id] || this.state.focusMode) { const p = L.pos[id]; tMin = Math.min(tMin, p.y - p.h / 2); tMax = Math.max(tMax, p.y + p.h / 2); } });
+    const ch = tMax - tMin + 40;
+    const left = this.state.lib ? Math.min(432, w / 2) : 32;
+    const k = Math.max(0.5, Math.min(1, (w - panel - left - 32) / cw, (h - 160) / ch));
+    this.setState({ k, tx: left, ty: 110 - (tMin - 30) * k });
+  }
+  ensureVisible(id) {
+    const L = this.layout(), p = L.pos[id]; if (!p) return;
+    const n = this.get(id), { w, h } = this.vpSize(), { k, tx, ty } = this.state;
+    const panel = Math.min(420, w);
+    const sx = (this.X[n.type] + this.W[n.type] / 2) * k + tx, sy = p.y * k + ty;
+    if (sx < 40 || sx > w - panel - 40 || sy < 90 || sy > h - 60) {
+      this.setState({ tx: (w - panel) / 2 - (this.X[n.type] + this.W[n.type] / 2) * k, ty: h / 2 - p.y * k });
+    }
+  }
+  zoomBy(f, cx, cy) {
+    const { k, tx, ty } = this.state, { w, h } = this.vpSize();
+    const nk = Math.max(0.15, Math.min(2.5, k * f));
+    cx = cx ?? w / 2; cy = cy ?? h / 2;
+    this.setState({ k: nk, tx: cx - (cx - tx) * (nk / k), ty: cy - (cy - ty) * (nk / k) });
+  }
+  onWheel(e) {
+    e.preventDefault();
+    const r = this.vpRef.current.getBoundingClientRect();
+    if (e.ctrlKey || Math.abs(e.deltaY) >= Math.abs(e.deltaX)) this.zoomBy(Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0015)), e.clientX - r.left, e.clientY - r.top);
+    else this.setState(s => ({ tx: s.tx - e.deltaX }));
+  }
+
+  edge(x1, y1, x2, y2) {
+    if (this.props.edgeStyle === 'kątowe') { const mx = x1 + Math.min(30, (x2 - x1) / 2); return `M${x1} ${y1}H${mx}V${y2}H${x2}`; }
+    const mx = (x1 + x2) / 2; return `M${x1} ${y1}C${mx} ${y1},${mx} ${y2},${x2} ${y2}`;
+  }
+  plural(n) { if (n === 1) return '1 książka'; const d = n % 10, t = n % 100; return n + (d >= 2 && d <= 4 && (t < 12 || t > 14) ? ' książki' : ' książek'); }
+
+  panel(id) {
+    const n = this.get(id), N = this.N, B = this.B;
+    const typeLabel = { obszar: 'Obszar życia', postawa: n.method ? 'Metoda pracy' : 'Postawa', drogowskaz: 'Drogowskaz', ksiazka: 'Książka' }[n.type];
+    const typeColor = n.type === 'ksiazka' ? 'oklch(0.55 0.13 60)' : 'oklch(0.42 0.08 150)';
+    const pathOf = (x) => this.ancestors(x).map(a => N[a].name.replace(/\.$/, ''));
+    const short = (s) => s.length > 60 ? s.slice(0, 58) + '…' : s;
+    const bookItem = (b) => ({ key: b, label: B[b].name, sub: B[b].author, color: 'oklch(0.66 0.14 60)', onClick: () => this.select(b) });
+    const sections = [];
+    let meta = null, note = null;
+    if (n.type === 'ksiazka') {
+      meta = [n.author, n.cat].join(' · ');
+      sections.push({ title: 'Dopasowane elementy (' + n.links.length + ')', items: n.links.map(l => ({ key: l, label: N[l].name, sub: pathOf(l).map(short).join(' › ') || 'Obszar życia', color: 'oklch(0.42 0.08 150)', onClick: () => this.select(l) })) });
+      sections.push({ title: 'Źródło', items: [{ key: 'src', label: n.src, sub: 'Dopasowanie na podstawie opisów książki dostępnych w internecie', color: 'oklch(0.5 0.02 150)', onClick: () => {} }] });
+    } else {
+      if (n.children.length) {
+        const t = n.type === 'obszar' ? (N[n.children[0]].method ? 'Metody pracy' : 'Postawy') : 'Drogowskazy';
+        sections.push({ title: t + ' (' + n.children.length + ')', items: n.children.map(c => ({ key: c, label: N[c].name, sub: this.subBooks[c].size ? this.plural(this.subBooks[c].size) : 'brak dopasowanych książek', color: 'oklch(0.42 0.08 150)', onClick: () => this.select(c) })) });
+      }
+      const bs = [...this.subBooks[id]];
+      sections.push({ title: (n.type === 'drogowskaz' ? 'Książki' : 'Wszystkie książki w gałęzi') + ' (' + bs.length + ')', items: bs.map(bookItem) });
+      if (n.missing) note = 'Postawy i drogowskazy tego obszaru nie znalazły się w dostarczonym pliku (PDF kończy się na s. 81). Książki są na razie przypisane bezpośrednio do obszaru.';
+    }
+    return {
+      url: location.pathname.split('/').pop() + '#/' + this.SLUG[n.type] + '/' + id,
+      typeLabel, typeColor, name: n.name, desc: n.desc || null,
+      hasTags: !!(n.tags && n.tags.length), tags: (n.tags || []).map(t => ({ key: t, label: t, onClick: () => this.setState({ lib: true, libTags: [t], libQ: '', minLinks: 1 }) })), meta, note, hr: !!n.hr,
+      path: n.type === 'ksiazka' ? [] : this.ancestors(id).map(a => ({ key: a, label: short(N[a].name), onClick: () => this.select(a) })),
+      sections
+    };
+  }
+
+  renderVals() {
+    const { k, tx, ty, drag, sel, query } = this.state;
+    const base = {
+      vpRef: this.vpRef, cursor: drag ? 'grabbing' : 'grab',
+      transform: `translate(${tx}px,${ty}px) scale(${k})`,
+      gridSize: `${24 * k}px ${24 * k}px`, gridPos: `${tx}px ${ty}px`, zoomLabel: Math.round(k * 100) + '%',
+      onDown: (e) => { if (e.button !== 0 || e.target.closest('[data-node],[data-ui]')) return; this.setState({ drag: { x: e.clientX, y: e.clientY, tx, ty } }); },
+      onMove: (e) => { const d = this.state.drag; if (d) this.setState({ tx: d.tx + e.clientX - d.x, ty: d.ty + e.clientY - d.y }); },
+      onUp: () => { if (this.state.drag) this.setState({ drag: null }); },
+      zoomIn: () => this.zoomBy(1.25), zoomOut: () => this.zoomBy(0.8), fit: () => this.fit(),
+      query, onQuery: (e) => this.setState({ query: e.target.value }),
+      closeSel: () => { history.replaceState(null, '', location.pathname + location.search); this.setState({ sel: null, focusMode: false }); },
+      hasSel: false, sel: {}, hasResults: false, results: [], lib: false, linkOpts: [], tagChips: [], libBooks: [], libCount: '', hasLibTags: false, libBtnBg: 'transparent', libBtnFg: 'oklch(0.25 0.02 150)', toggleLib: () => this.setState(s => ({ lib: !s.lib })),
+      obszarNodes: [], postawaNodes: [], drogNodes: [], bookNodes: [], treeEdges: [], bookEdges: [],
+      headY: 0, svgTop: 0, svgH: 0, svgShift: '',
+      focusMode: this.state.focusMode,
+      exitFocus: () => this.setState({ focusMode: false }, () => this.state.sel && this.ensureVisible(this.state.sel)),
+      expandAll: () => this.setState({ focusMode: false,  expanded: new Set(Object.keys(this.N).filter(i => this.N[i].children.length || this.N[i].books.length)) }, () => this.fit()),
+      collapseAll: () => this.setState({ focusMode: false, expanded: new Set() }, () => this.fit())
+    };
+    if (!this.state.ready) return base;
+    const N = this.N, B = this.B, L = this.layout(), pos = L.pos;
+
+    let act = null, actB = null;
+    if (sel && N[sel]) {
+      const sub = this.descendants(sel); act = new Set([...sub, ...this.ancestors(sel)]);
+      actB = new Set(); sub.forEach(s => N[s].books.forEach(b => actB.add(b)));
+    } else if (sel && B[sel]) {
+      actB = new Set([sel]); act = new Set();
+      B[sel].links.forEach(l => { act.add(l); this.ancestors(l).forEach(a => act.add(a)); });
+    }
+    const op = (id) => !act ? 1 : (act.has(id) || actB.has(id) ? 1 : 0.18);
+    const outline = (id) => id === sel ? '2px solid oklch(0.66 0.14 60)' : 'none';
+
+    const mk = (id) => {
+      const n = N[id], open = this.state.expanded.has(id), cnt = this.subBooks[id].size;
+      return {
+        key: id, name: n.name, top: pos[id].y - this.H[n.type] / 2, op: op(id), outline: outline(id), hr: n.hr,
+        hasKids: n.children.length > 0 || (n.type !== 'drogowskaz' && n.books.length > 0), toggleLabel: open ? '−' : '+',
+        meta: n.type === 'obszar' ? (n.missing ? 'brak postaw w pliku · ' : '') + this.plural(cnt) : (n.method ? 'metoda · ' : '') + this.plural(cnt),
+        hasBooks: n.books.length > 0, bookCount: n.books.length,
+        onClick: () => this.select(id), onToggle: (e) => { e.stopPropagation(); this.toggle(id); }
+      };
+    };
+    const vis = Object.keys(pos).filter(id => N[id]);
+    base.obszarNodes = vis.filter(id => N[id].type === 'obszar').map(mk);
+    base.postawaNodes = vis.filter(id => N[id].type === 'postawa').map(mk);
+    base.drogNodes = vis.filter(id => N[id].type === 'drogowskaz').map(mk);
+    base.bookNodes = L.books.map(b => ({ key: b.id, name: B[b.id].name, author: B[b.id].author, top: b.y - this.H.ksiazka / 2, op: op(b.id), outline: outline(b.id), onClick: () => this.select(b.id) }));
+
+    const off = L.minY - 20;
+    base.svgTop = off; base.svgH = L.maxY - L.minY + 40; base.svgShift = `translate(0,${-off})`;
+    base.headY = L.minY - 44;
+    base.treeEdges = vis.filter(id => N[id].parent).map(id => {
+      const p = N[id].parent, t = N[p].type;
+      const on = !act || (act.has(id) && act.has(p));
+      return { key: id, d: this.edge(this.X[t] + this.W[t], pos[p].y, this.X[N[id].type], pos[id].y), op: on ? 0.45 : 0.07 };
+    });
+    base.bookEdges = [];
+    L.books.forEach(b => b.reps.forEach(r => {
+      const t = N[r].type, on = act && actB.has(b.id) && act.has(r);
+      base.bookEdges.push({ key: r + '>' + b.id, d: this.edge(this.X[t] + this.W[t] + (t !== 'drogowskaz' ? 12 : 0), pos[r].y, this.X.ksiazka, b.y), op: !act ? 0.4 : on ? 0.95 : 0.05, w: on ? 2 : 1.2 });
+    }));
+
+    const { lib, libQ, libTags, minLinks } = this.state;
+    base.lib = lib;
+    base.libBtnBg = lib ? 'oklch(0.40 0.08 150)' : 'transparent';
+    base.libBtnFg = lib ? 'oklch(0.98 0.01 150)' : 'oklch(0.25 0.02 150)';
+    base.toggleLib = () => this.setState(s => ({ lib: !s.lib }));
+    base.libQ = libQ; base.onLibQ = (e) => this.setState({ libQ: e.target.value });
+    base.hasLibTags = libTags.length > 0; base.clearTags = () => this.setState({ libTags: [] });
+    base.linkOpts = [1, 2, 3, 4].map(m => ({ key: m, label: m === 1 ? 'Wszystkie' : m + '+', bg: minLinks === m ? 'oklch(0.40 0.08 150)' : 'transparent', fg: minLinks === m ? 'oklch(0.98 0.01 150)' : 'oklch(0.3 0.02 150)', onClick: () => this.setState({ minLinks: m }) }));
+    if (!this._tagCounts) { const c = {}; Object.values(B).forEach(b => b.tags.forEach(t => c[t] = (c[t] || 0) + 1)); this._tagCounts = Object.entries(c).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'pl')); }
+    base.tagChips = this._tagCounts.map(([t, c]) => { const on = libTags.includes(t); return { key: t, label: t + ' ' + c, bg: on ? 'oklch(0.40 0.08 150)' : '#fff', fg: on ? 'oklch(0.98 0.01 150)' : 'oklch(0.3 0.02 150)', bd: on ? 'oklch(0.40 0.08 150)' : 'oklch(0.25 0.02 150 / 0.15)', onClick: () => this.setState(s => ({ libTags: s.libTags.includes(t) ? s.libTags.filter(x => x !== t) : [...s.libTags, t] })) }; });
+    const lq = libQ.trim().toLowerCase();
+    const lb = Object.values(B).filter(b => b.links.length >= minLinks && libTags.every(t => b.tags.includes(t)) && (!lq || (b.name + ' ' + b.author + ' ' + b.tags.join(' ')).toLowerCase().includes(lq)))
+      .sort((a, b) => b.links.length - a.links.length || a.name.localeCompare(b.name, 'pl'));
+    base.libBooks = lb.map(b => ({ key: b.id, name: b.name, author: b.author, links: b.links.length, outline: b.id === sel ? '2px solid oklch(0.66 0.14 60)' : 'none', tags: b.tags.map(t => ({ key: t, label: t })), onClick: () => { this._focusNext = true; this.select(b.id); } }));
+    base.libCount = lb.length ? this.plural(lb.length).replace('książki', 'książki').replace(/^(\d+)/, '$1') + ' · sortowane wg liczby połączeń' : 'Brak książek dla wybranych filtrów';
+    if (sel && this.get(sel)) { base.hasSel = true; base.sel = this.panel(sel); }
+    const q = query.trim().toLowerCase();
+    if (q.length > 1) {
+      const all = [...Object.values(B), ...Object.values(N)];
+      base.results = all.filter(x => (x.name + ' ' + (x.author || '') + ' ' + (x.tags || []).join(' ')).toLowerCase().includes(q)).slice(0, 12).map(x => ({
+        key: x.id, label: x.name, sub: x.type === 'ksiazka' ? 'Książka · ' + x.author : { obszar: 'Obszar', postawa: 'Postawa', drogowskaz: 'Drogowskaz' }[x.type],
+        onClick: () => this.select(x.id)
+      }));
+      base.hasResults = base.results.length > 0;
+    }
+    return base;
+  }
+}
+</script>
+</body>
+</html>
