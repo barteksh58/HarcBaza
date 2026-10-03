@@ -1,25 +1,39 @@
-# CODING AGENTS: READ THIS FIRST
+# Drogowskazy HO · HR i lektury
 
-This is a **handoff bundle** from Claude Design (claude.ai/design).
+Interaktywna mapa łącząca książki z drogowskazami prób na stopnie HO i HR (ZHR).
+Hierarchia: **Obszar życia → Postawa / metoda → Drogowskaz → Książka**.
 
-A user mocked up designs in HTML/CSS/JS using an AI design tool, then exported this bundle so a coding agent can implement the designs for real.
+## Uruchomienie
 
-## What you should do — IMPORTANT
+```bash
+npm install
+npm run dev      # serwer deweloperski
+npm run build    # statyczna strona w dist/ (działa z dowolnego katalogu)
+npm test         # testy danych i układu mapy
+```
 
-**Read the chat transcripts first.** There are 1 chat transcript(s) in `chats/`. The transcripts show the full back-and-forth between the user and the design assistant — they tell you **what the user actually wants** and **where they landed** after iterating. Don't skip them. The final HTML files are the output, but the chat is where the intent lives.
+## Co potrafi
 
-**Read `project/Mapa Drogowskazow.dc.html` in full.** The user had this file open when they triggered the handoff, so it's almost certainly the primary design they want built. Read it top to bottom — don't skim. Then **follow its imports**: open every file it pulls in (shared components, CSS, scripts) so you understand how the pieces fit together before you start implementing.
+- Mapa-siatka z przybliżaniem (kółko myszy, przyciski −/+, „Dopasuj”) i przesuwaniem (przeciąganie).
+- Drzewo rozwija się poziomami: „+” przy obszarze → postawy, „+” przy postawie → drogowskazy i ich książki.
+- Każdy element ma własny adres, np. `#/ksiazka/atomowe-nawyki`, `#/drogowskaz/zdr-sport-3`,
+  i otwiera panel boczny z miejscem na pełny opis.
+- Wyszukiwarka (tytuł, autor, tag, nazwa drogowskazu).
+- „Biblioteczka”: filtr po tagach i po liczbie połączeń na mapie (2+, 3+, 4+).
+  Książka otwarta z biblioteczki pokazuje tylko swoje ścieżki („Widok ścieżki”);
+  kliknięcie drogowskazu na ścieżce pokazuje wszystkie jego książki.
 
-**If anything is ambiguous, ask the user to confirm before you start implementing.** It's much cheaper to clarify scope up front than to build the wrong thing.
+## Dane
 
-## About the design files
+Wszystko jest w `src/data.ts`:
 
-The design medium is **HTML/CSS/JS** — these are prototypes, not production code. Your job is to **recreate them pixel-perfectly** in whatever technology makes sense for the target codebase (React, Vue, native, whatever fits). Match the visual output; don't copy the prototype's internal structure unless it happens to fit.
+- `obszary` – przepisane z `project/uploads/vademecum.pdf`. Plik kończy się na s. 81, więc obszary
+  *Rodzina*, *Pasje*, *Kultura* i *Przyroda* nie mają jeszcze postaw (`missing: true`).
+- `ksiazki` – lektury z harcerskielektury.pl z dopasowaniem (`l`) i tagami (`tags`).
+  Id drogowskazu to `<id postawy>-<numer>`, np. `zdr-sport-3`.
 
-**Don't render these files in a browser or take screenshots unless the user asks you to.** Everything you need — dimensions, colors, layout rules — is spelled out in the source. Read the HTML and CSS directly; a screenshot won't tell you anything they don't.
+`npm test` sprawdza, czy każde powiązanie książki wskazuje istniejący element mapy.
 
-## Bundle contents
+## Źródło projektu
 
-- `README.md` — this file
-- `chats/` — conversation transcripts (read these!)
-- `project/` — the `Mapa powiązań książek i drogowskazów` project files (HTML prototypes, assets, components)
+`project/` i `chats/` to eksport z Claude Design (prototyp `Mapa Drogowskazow.dc.html` i rozmowa projektowa).
